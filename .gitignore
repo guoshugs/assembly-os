@@ -1,0 +1,13 @@
+*.exe
+*.obj
+*.bin
+*.vhd
+*~
+*.un~
+*.lst
+Thumbs.db
+Desktop.ini
+.vscode/
+*.log
+*.bak
+*.xlsx
