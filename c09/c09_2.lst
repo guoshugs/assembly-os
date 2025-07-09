@@ -1,0 +1,83 @@
+     1                                           ;代码清单9-2
+     2                                           ;文件名：c09_2.asm
+     3                                           ;文件说明：用于演示BIOS中断的用户程序 
+     4                                           ;创建日期：2012-3-28 20:35
+     5                                           
+     6                                  ;===============================================================================
+     7                                  SECTION header vstart=0                     ;定义用户程序头部段 
+     8 00000000 [00000000]                  program_length  dd program_end          ;程序总长度[0x00]
+     9                                      
+    10                                      ;用户程序入口点
+    11 00000004 [0000]                      code_entry      dw start                ;偏移地址[0x04]
+    12 00000006 [00000000]                                  dd section.code.start   ;段地址[0x06] 
+    13                                      
+    14 0000000A 0300                        realloc_tbl_len dw (header_end-realloc_begin)/4
+    15                                                                              ;段重定位表项个数[0x0a]
+    16                                      
+    17                                      realloc_begin:
+    18                                      ;段重定位表           
+    19 0000000C [00000000]                  code_segment    dd section.code.start   ;[0x0c]
+    20 00000010 [00000000]                  data_segment    dd section.data.start   ;[0x14]
+    21 00000014 [00000000]                  stack_segment   dd section.stack.start  ;[0x1c]
+    22                                      
+    23                                  header_end:                
+    24                                      
+    25                                  ;===============================================================================
+    26                                  SECTION code align=16 vstart=0           ;定义代码段（16字节对齐） 
+    27                                  start:
+    28 00000000 A1[1400]                      mov ax,[stack_segment]
+    29 00000003 8ED0                          mov ss,ax
+    30 00000005 BC[0001]                      mov sp,ss_pointer
+    31 00000008 A1[1000]                      mov ax,[data_segment]
+    32 0000000B 8ED8                          mov ds,ax
+    33                                        
+    34 0000000D B97700                        mov cx,msg_end-message            ;因为下面要loop，所以之前要cx计算字符串的长度
+    35 00000010 BB[0000]                      mov bx,message                    ;取得字符串的首地址，并放到基址寄存器bx，因为字符串是从标号message开始的，它有vstart=0
+    36                                        
+    37                                   .putc:
+    38 00000013 B40E                          mov ah,0x0e                       ;显示字符串，并没有自己写代码，用的是bios功能调用，中断0x10下面的0x0e号子功能
+    39 00000015 8A07                          mov al,[bx]                       ;首先将功能号0e传送到ah寄存器，然后访存，用bx里的值作为偏移地址访问数据段取出一个字符传送到al寄存器
+    40 00000017 CD10                          int 0x10                          ;0x0e是显示一个字符并推进光标，执行软中断0x10
+    41 00000019 43                            inc bx                            
+    42 0000001A E2F7                          loop .putc                        ;因为要显示一串字符，所以循环
+    43                                  
+    44                                   .reps:                                 ;从键盘读取按下的那个键并把它显示在屏幕上，需要访问硬件，写一堆指令，但因为有了bios功能调用，只需要几条语句就可以
+    45 0000001C B400                          mov ah,0x00                       ;在中断返回之后ah中存放是字符的ascii码
+    46 0000001E CD16                          int 0x16                          ;使用软中断0x16从键盘读字符，读完之后al中是字符编码，ah中是扫描码
+    47                                        
+    48 00000020 B40E                          mov ah,0x0e                       ;是显示一个字符并推进光标，执行软中断0x10
+    49 00000022 B307                          mov bl,0x07
+    50 00000024 CD10                          int 0x10                          ;又一次使用0x10号中断及其0x0e号子功能
+    51                                  
+    52 00000026 EBF4                          jmp .reps
+    53                                  
+    54                                  ;===============================================================================
+    55                                  SECTION data align=16 vstart=0
+    56                                  
+    57 00000000 48656C6C6F2C206672-         message       db 'Hello, friend!',0x0d,0x0a
+    57 00000009 69656E64210D0A     
+    58 00000010 546869732073696D70-                       db 'This simple procedure used to demonstrate '
+    58 00000019 6C652070726F636564-
+    58 00000022 757265207573656420-
+    58 0000002B 746F2064656D6F6E73-
+    58 00000034 747261746520       
+    59 0000003A 7468652042494F5320-                       db 'the BIOS interrupt.',0x0d,0x0a
+    59 00000043 696E74657272757074-
+    59 0000004C 2E0D0A             
+    60 0000004F 506C65617365207072-                       db 'Please press the keys on the keyboard ->'
+    60 00000058 65737320746865206B-
+    60 00000061 657973206F6E207468-
+    60 0000006A 65206B6579626F6172-
+    60 00000073 64202D3E           
+    61                                      msg_end:
+    62                                                     
+    63                                  ;===============================================================================
+    64                                  SECTION stack align=16 vstart=0
+    65                                             
+    66 00000000 <res 100h>                               resb 256
+    66          ******************       warning: uninitialized space declared in stack section: zeroing [-w+zeroing]
+    67                                  ss_pointer:
+    68                                   
+    69                                  ;===============================================================================
+    70                                  SECTION program_trail
+    71                                  program_end:

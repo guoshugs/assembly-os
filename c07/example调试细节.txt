@@ -1,0 +1,51 @@
+<bochs:3> u/50
+0000000000007c00: (                    ): jmp .+26  (0x00007c1c)    ; eb1a
+0000000000007c02: (                    ): popa                      ; 61
+0000000000007c03: (                    ): bound sp, ss:[bp+di+100]  ; 626364
+0000000000007c06: (                    ): push 0x6c6b6a69           ; 65666768696a6b6c
+0000000000007c0e: (                    ): insw word ptr es:[di], dx ; 6d
+0000000000007c0f: (                    ): outsb dx, byte ptr ds:[si] ; 6e
+0000000000007c10: (                    ): outsw dx, word ptr ds:[si] ; 6f
+0000000000007c11: (                    ): jo .+113  (0x00007c84)    ; 7071
+0000000000007c13: (                    ): jb .+115  (0x00007c88)    ; 7273
+0000000000007c15: (                    ): jz .+117  (0x00007c8c)    ; 7475
+0000000000007c17: (                    ): jbe .+119  (0x00007c90)   ; 7677
+0000000000007c19: (                    ): js .+121  (0x00007c94)    ; 7879
+0000000000007c1b: (                    ): jp .-72  (0x00007bd5)     ; 7ab8
+0000000000007c1d: (                    ): rol byte ptr ds:[bx], 0x8e ; c0078e
+0000000000007c20: (                    ): fmul dword ptr ds:[si-28984] ; d88cc88e
+0000000000007c24: (                    ): sar byte ptr ds:[si], 0x01 ; d0bc0000
+0000000000007c28: (                    ): mov cx, 0x001a            ; b91a00
+0000000000007c2b: (                    ): mov bx, 0x0002            ; bb0200
+0000000000007c2e: (                    ): mov al, byte ptr ds:[bx]  ; 8a07
+0000000000007c30: (                    ): push ax                   ; 50
+0000000000007c31: (                    ): inc bx                    ; 43
+0000000000007c32: (                    ): loop .-6  (0x00007c2e)    ; e2fa
+0000000000007c34: (                    ): mov cx, 0x001a            ; b91a00
+0000000000007c37: (                    ): mov bx, 0x0002            ; bb0200
+0000000000007c3a: (                    ): pop ax                    ; 58
+0000000000007c3b: (                    ): mov byte ptr ds:[bx], al  ; 8807
+0000000000007c3d: (                    ): inc bx                    ; 43
+0000000000007c3e: (                    ): loop .-6  (0x00007c3a)    ; e2fa
+0000000000007c40: (                    ): mov si, 0x0002            ; be0200
+0000000000007c43: (                    ): mov di, 0x0000            ; bf0000
+0000000000007c46: (                    ): mov cx, 0x001a            ; b91a00
+0000000000007c49: (                    ): mov al, byte ptr ds:[si]  ; 8a04
+0000000000007c4b: (                    ): mov byte ptr es:[di], al  ; 268805
+0000000000007c4e: (                    ): inc di                    ; 47
+0000000000007c4f: (                    ): mov byte ptr es:[di], 0x07 ; 26c60507
+0000000000007c53: (                    ): inc di                    ; 47
+0000000000007c54: (                    ): inc si                    ; 46
+0000000000007c55: (                    ): loop .-14  (0x00007c49)   ; e2f2
+0000000000007c57: (                    ): jmp .-2  (0x00007c57)     ; ebfe
+0000000000007c59: (                    ): add byte ptr ds:[bx+si], al ; 0000
+0000000000007c5b: (                    ): add byte ptr ds:[bx+si], al ; 0000
+0000000000007c5d: (                    ): add byte ptr ds:[bx+si], al ; 0000
+0000000000007c5f: (                    ): add byte ptr ds:[bx+si], al ; 0000
+0000000000007c61: (                    ): add byte ptr ds:[bx+si], al ; 0000
+0000000000007c63: (                    ): add byte ptr ds:[bx+si], al ; 0000
+0000000000007c65: (                    ): add byte ptr ds:[bx+si], al ; 0000
+0000000000007c67: (                    ): add byte ptr ds:[bx+si], al ; 0000
+0000000000007c69: (                    ): add byte ptr ds:[bx+si], al ; 0000
+0000000000007c6b: (                    ): add byte ptr ds:[bx+si], al ; 0000
+0000000000007c6d: (                    ): add byte ptr ds:[bx+si], al ; 0000

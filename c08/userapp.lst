@@ -1,0 +1,62 @@
+     1                                      ;包含代码段、数据段和栈段的用户程序
+     2                                  ;========================================================================
+     3                                  SECTION header vstart=0                                 ;用户程序头部段
+     4 00000000 [00000000]                  program_length  dd  program_end                     ;程序总长度[0x00]
+     5                                      
+     6                                      ;用户程序入口点
+     7 00000004 [0000]                      code_entry      dw  start                           ;偏移地址[0x04]
+     8 00000006 [00000000]                                  dd  section.code.start              ;段地址[0x06]因为需要提供入口点的段地址和偏移地址，以便用户从这里进入程序执行，重定位覆盖的就是这个地方，被改成了逻辑段地址
+     9                                                  
+    10 0000000A 0300                        realloc_tbl_len dw  (segtbl_end-segtbl_begin)/4     ;段重定位表项个数[0x0A]
+    11                                      
+    12                                      ;段重定位表，其中记录了每个段的汇编地址，在程序加载之后及执行之前，加载器会将他们修改为真实的逻辑段地址
+    13                                      segtbl_begin:
+    14 0000000C [00000000]                  code_segment    dd  section.code.start              ;[0x0C]，代码段的汇编地址被记录了2次，入口点那也有一次
+    15 00000010 [00000000]                  data_segment    dd  section.data.start              ;[0x10]
+    16 00000014 [00000000]                  stack_segment   dd  section.stack.start             ;[0x14]
+    17                                      segtbl_end:
+    18                                      
+    19                                  ;========================================================================
+    20                                  SECTION code align=16 vstart=0                          ;代码段
+    21                                      start:
+    22                                          ;初始执行时，DS和ES指向用户程序头部段
+    23 00000000 A1[1400]                        mov ax,[stack_segment]                          ;设置到用户程序自己的堆栈
+    24 00000003 8ED0                            mov ss,ax
+    25 00000005 BC[0001]                        mov sp,stack_pointer                            ;设置初始的栈顶指针
+    26                                          
+    27 00000008 A1[1000]                        mov ax,[data_segment]                           ;设置到用户程序自己的数据段
+    28 0000000B 8ED8                            mov ds,ax                                       ;自此ds已经指向数据段
+    29                                          
+    30 0000000D B800B8                          mov ax,0xb800
+    31 00000010 8EC0                            mov es,ax                                       ;显存准备好了
+    32                                          
+    33 00000012 BE[0000]                        mov si,message                                  ;ds设置完毕后，再设置数据段的偏移地址/指针
+    34 00000015 BF0000                          mov di,0                                        ;es设置完毕后，再设置显存的偏移地址
+    35                                          
+    36                                      next:
+    37 00000018 8A04                            mov al,[si]
+    38 0000001A 3C00                            cmp al,0                                        ;因为字符串是以0结尾，要判断是否显示到尾部了
+    39 0000001C 740E                            je exit
+    40 0000001E 268805                          mov byte [es:di],al
+    41 00000021 26C6450107                      mov byte [es:di+1],0x07                         ;这里并未改变di的值，所以下面要加2
+    42 00000026 46                              inc si
+    43 00000027 83C702                          add di,2
+    44 0000002A EBEC                            jmp next
+    45                                          
+    46                                      exit:
+    47 0000002C EBFE                            jmp $
+    48                                       
+    49                                  ;========================================================================
+    50                                  SECTION data align=16 vstart=0                          ;数据段
+    51 00000000 68656C6C6F20776F72-         message         db  'hello world.',0
+    51 00000009 6C642E00           
+    52                                      
+    53                                  ;========================================================================
+    54                                  SECTION stack align=16 vstart=0                         ;栈段
+    55 00000000 <res 100h>                                  resb 256                            ;栈空间的大小是通过位指令resb来分配的
+    55          ******************       warning: uninitialized space declared in stack section: zeroing [-w+zeroing]
+    56                                      stack_pointer:
+    57                                      
+    58                                  ;========================================================================
+    59                                  SECTION trail align=16                                  ;尾部
+    60                                  program_end:

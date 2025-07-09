@@ -1,0 +1,12 @@
+第一版的配书工具nasmide.exe在64位Windows上不能正常运行，已经有很多网友反馈这个问题。为此，我编写了64位的nasmide2.exe，同时也推出了64位的虚拟硬盘写入工具fixvhdw2.exe，这两个新工具都比以前强悍，推荐使用（上面的配书文件包中已经包含了这两个新工具）。
+        视频用户注意：在刚开始录制配套视频时，尚未编写nasmide2.exe，所以视频中推荐使用Notepad++，现在已经不推荐使用。不排除某些读者朋友坚持使用这个软件，在这种情况下，您可以按如下方法进行配置，配置后将可以提供自动编译过程：
+
+        1，启动NotePad++，在菜单上选择“运行(R)”->“运行(R)”。
+
+        2，在弹出的窗口内，输入：cmd /k pushd "$(CURRENT_DIRECTORY)" & D:\ACERFILES\OLDE\PROGFILES\NASM\nasm.exe -f bin  "$(FULL_CURRENT_PATH)" -o "$(NAME_PART).bin" & PAUSE & EXIT。其中，“D:\ACERFILES\OLDE\PROGFILES\NASM\”应该改成你自己机器上实际的NASM安装路径。
+
+        3，点击“保存”，然后为这个运行命令起一个名字并分配一个快捷键，这样你下次就可以直接快速执行编译过程。
+
+cmd /k pushd "$(CURRENT_DIRECTORY)" & D:\Users\NASM\nasm.exe -f bin  "$(FULL_CURRENT_PATH)" -o "$(NAME_PART).bin" & PAUSE & EXIT
+
+cmd /k pushd "$(CURRENT_DIRECTORY)" & D:\Users\NASM\nasm.exe -f bin  "$(FULL_CURRENT_PATH)" -o "$(NAME_PART).bin" -l "$(NAME_PART).lst" & PAUSE & EXIT
