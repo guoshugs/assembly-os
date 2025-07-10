@@ -75,4 +75,4 @@ It demonstrates:
 - Direct memory and hardware manipulation
 - Strong familiarity with protected mode and paging
 
-It is included here as part of my school/internship application portfolio.
+It is included here as part of my school application portfolio.
